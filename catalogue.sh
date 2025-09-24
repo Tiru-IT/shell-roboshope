@@ -12,6 +12,7 @@ if [ $USER_ID -ne 0 ]; then
     exit 1
 fi
 SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.tirusatrapu.fun
 
 LOGS_FOLDER="/var/log/shell-roboshope"
 SCRIOT_NAME=$( echo $0 | cut -d "." -f1 )
@@ -53,13 +54,13 @@ VALIDATE $? "Downloading catalogue appilication"
 cd /app 
 VALIDATE $? "move to app directory"
 
-rm-rf /app/*
+rm -rf /app/*
 VALIDATE $? "removing existing code"
 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "unzip the code"
 
-npm install 
+npm install &>>$LOG_FILE
 VALIDATE $? "npm install"
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
