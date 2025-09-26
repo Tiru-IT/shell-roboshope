@@ -9,7 +9,7 @@ Y="\e[33m"
 N="\e[0m"
 
 USER_ID=$(id -u)
-if[ $USER_ID -ne 0 ]; then 
+if [ $USER_ID -ne 0 ]; then 
     echo -e "ERROR:: please run this command with  $R root user $N "
 fi
 
