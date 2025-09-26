@@ -28,14 +28,14 @@ fi
 dnf module disable nodejs -y &>>$LOG_FILE
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 dnf install nodejs -y &>>$LOG_FILE
-echo "install nodjs $G success $N"
+echo -e "install nodjs $G success $N"
 
 
 id roboshope &>>$LOG_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
 else
-    echo "user already exicute $Y SKIPPING $N"
+    echo -e "user already exicute $Y SKIPPING $N"
 fi
 
 mkdir /app 
@@ -43,7 +43,7 @@ curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue
 cd /app
 rm -rf /app/* &>>$LOG_FILE 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
-echo "appilication nodjs $G success $N"
+echo -e "appilication nodjs $G success $N"
  
 npm install &>>$LOG_FILE
 
@@ -67,4 +67,4 @@ systemctl restart catalogue &>>$LOG_FILE
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$($END_TIME - $SATRT_TIME)
-echo "Script exicuted in $TOTAL_TIME seconds"
+echo -e "Script exicuted in $TOTAL_TIME $Y seconds $N"
