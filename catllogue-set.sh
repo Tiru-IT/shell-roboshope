@@ -57,9 +57,9 @@ systemctl enable catalogue &>>$LOG_FILE
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 
-INDEX=$(mongosh $mongodb_ip --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh $mongodb_ip --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')") &>>$LOG_FILE
 if [ $INDEX -ne 0 ]; then 
-    mongosh --host $mongodb_ip </app/db/master-data.js
+    mongosh --host $mongodb_ip </app/db/master-data.js &>>$LOG_FILE
 else
     echo -e "User already exit $Y SKIPPING $N"
 fi 
