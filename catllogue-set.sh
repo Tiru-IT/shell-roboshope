@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+trap 'echo "there is error in $LINENO, command is: $BASH_COMMAND"' ERR
 
 USER_ID=$(id -u)
 R="\e[31m"
@@ -32,10 +33,11 @@ echo -e "install nodjs $G success $N"
 
 
 id roboshope &>>$LOG_FILE
+
 if [ $? -ne 0 ]; then 
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
 else
-    echo -e "user already exicute $Y SKIPPING $N"
+    echo -e "user already exicute $Y...SKIPPING $N"
 fi
 
 mkdir /app 
