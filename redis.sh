@@ -28,7 +28,8 @@ dnf module enable redis:7 -y &>>$LOG_FILE
 dnf install redis -y &>>$LOG_FILE
 echo -e "redis install $G SUCCESS $N"
 
-sed -i -e 's/127.0.0.1/0.0.0.0/g' -e 'protected-mode/ c protected no' /etc/redis/redis.conf
+sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
+#sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
 systemctl enable redis 
 systemctl start redis 
 echo -e "redis start $G SUCCESS $N"
