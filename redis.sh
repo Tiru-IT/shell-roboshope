@@ -38,4 +38,5 @@ echo -e "redis start $G SUCCESS $N"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
-echo -e "Script exicuted in $Total_TIME, $Y secoends $N"
+#TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
+echo -e "Script exicuted in $TOTAL_TIME, $Y secoends $N"
