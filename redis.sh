@@ -19,7 +19,7 @@ LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 SCRIPT_DIR=$PWD
 
 mkdir -p $LOGS_FOLDER
-SATRT_TIME=$(date +$s)
+SATRT_TIME=$(date +%s)
 echo -e "Script started and exicuted is: $(date)" | tee -a $LOG_FILE
 
 #redis installl....
