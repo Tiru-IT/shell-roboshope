@@ -20,10 +20,10 @@ fi
 
 VALIDATE(){
     if [ $? -ne 0 ]; then 
-        echo -e "$R ...FAILER $N" | tee -a $LOG_FILE
+        echo -e "$2 ...$R FAILER $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e "$G ...SUCCESS $N" |tee -a $LOG_FILE
+        echo -e "$2 ...$G SUCCESS $N" |tee -a $LOG_FILE
     fi
 }
 
