@@ -68,5 +68,5 @@ systemctl restart catalogue &>>$LOG_FILE
 
 
 END_TIME=$(date +%s)
-TOTAL_TIME=$($END_TIME - $SATRT_TIME)
+TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
 echo -e "Script exicuted in $TOTAL_TIME $Y seconds $N"
