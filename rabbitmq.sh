@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-trap "thre is an ERROR in $lINENO ,command is: $BASH_COMMAND" ERR
+trap "thre is an ERROR in $LINENO ,command is: $BASH_COMMAND" ERR
 
 R="\e[31m"
 G="\e[32m"
@@ -34,7 +34,7 @@ VALIDATE(){
 }
 
 #rabbitmq install...
-cp $SCRIPT_DIR/rabbimq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOG_FILE
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOG_FILE
 dnf install rabbitmq-server -y &>>$LOG_FILE
 systemctl enable rabbitmq-server &>>$LOG_FILE
 systemctl start rabbitmq-server &>>$LOG_FILE

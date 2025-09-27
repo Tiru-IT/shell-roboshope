@@ -1,6 +1,9 @@
 #!/bin/bash
-set -e
-trap "thre is an ERROR in $lINENO ,command is: $BASH_COMMAND" ERR
+
+
+
+#set -e
+#trap "thre is an ERROR in $LINENO ,command is: $BASH_COMMAND" ERR
 
 R="\e[31m"
 G="\e[32m"
@@ -15,7 +18,7 @@ if [ $USER_ID -ne 0 ]; then
 fi
 
 SCRIPT_DIR=$PWD
-MONGODB_HOST="mysql.tirusatrapu.fun"
+MONGODB_HOST="mongodb.tirusatrapu.fun"
 SATRT_TIME=$(date +%s)
 
 LOGS_FOLDER="/var/log/shell-roboshope"
@@ -36,6 +39,8 @@ VALIDATE(){
 #shipping install
 
 dnf install maven -y &>>$LOG_FILE
+VALIDATE $? "install maven"
+
 id roboshop &>>$LOG_FILE
 if [ $? -ne ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
@@ -44,22 +49,45 @@ else
 fi
 
 mkdir /app &>>$LOG_FILE
+VALIDATE $? "create directory"
+
 curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
+VALIDATE $? "download code"
+
 cd /app 
+VALIDATE $? "move to app directory"
+
 rm -rf /app/* &>>$LOG_FILE
+VALIDATE $? "remove the code"
+
 unzip /tmp/shipping.zip &>>$LOG_FILE
+VALIDATE $? "unzip the code"
+
 
 mvn clean package &>>$LOG_FILE
+VALIDATE $? "clean the package"
+
 mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
+VALIDATE $? "target the file"
+
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
+VALIDATE $? "system shipping service"
+
 systemctl daemon-reload
 systemctl enable shipping &>>$LOG_FILE
+VALIDATE $? " enable shipping"
 
 dnf install mysql -y &>>$LOG_FILE
-mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
-mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>$LOG_FILE
-mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+VALIDATE $? "install mysql"
 
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
+    mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>>$LOG_FILE
+    mysql -h $MONGODB_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+else
+    echo -e "Shipping data is already loaded ... $Y SKIPPING $N"
+fi
 systemctl restart shipping
 echo -e "Install $G SUCCESS $N"
 
