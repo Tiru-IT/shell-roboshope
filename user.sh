@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
+
 trap 'echo "there is error in lineno $LINENO, command is: $BASH_COMMAND "' ERR
 
 R="\e[31m"
