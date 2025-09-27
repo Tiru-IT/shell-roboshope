@@ -13,6 +13,7 @@ if [ $USER_ID -ne 0 ]; then
 fi
 
 SCRIPT_DIR=$PWD
+MONGODB_HOST=
 SATRT_TIME=$(date +%s)
 
 LOGS_FOLDER="/var/log/shell-roboshope"
@@ -29,11 +30,10 @@ VALIDATE(){
         echo -e "$2 ...$G SUCCESS $N" | tee -a $LOG_FILE 
     fi
 }
-
-#user install....
+#cart install......
 
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "disable nodejs"
+VALIDATE $? "disable nodjs"
 
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "enable nodejs"
@@ -41,41 +41,40 @@ VALIDATE $? "enable nodejs"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "install nodejs"
 
-id roboshope &>>$LOG_FILE
+id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
 else
-    echo -e "User already exit $Y SKIPPING.. $N"
+    echo -e "cart already exit $Y SKIPPING $N"
 fi
 
-mkdir -p /app 
+mkdir /app 
 VALIDATE $? "create directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
-VALIDATE $? "download apilication code"
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOG_FILE
+VALIDATE $? "download cart code"
 
-cd /app 
-VALIDATE $? "change directary"
+cd /app
+VALIDATE $? "change directory"
 
-rm -rf /app/*
-VALIDATE $? "remove the ecitued code"
-
-unzip /tmp/user.zip &>>$LOG_FILE
+unzip /tmp/cart.zip &>>$LOG_FILE
 VALIDATE $? "unzip the code"
+
 
 npm install &>>$LOG_FILE
 VALIDATE $? "npm install"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
-VALIDATE $?  "start system user"
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service &>>$LOG_FILE
+VALIDATE $? "system cart service"
 
-systemctl daemon-reload 
+systemctl daemon-reload
+systemctl enable cart &>>$LOG_FILE
+VALIDATE $? "enable cart"
 
-systemctl enable user &>>$LOG_FILE
-VALIDATE $? "enable user"
+systemctl start cart
+VALIDATE $? "start cart"
 
-systemctl start user
-VALIDATE $? "start user"
+
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
