@@ -1,6 +1,6 @@
 #!/bin/bash
-set -e
-trap "thre is an ERROR in $LINENO ,command is: $BASH_COMMAND" ERR
+#set -e
+#trap "thre is an ERROR in $LINENO ,command is: $BASH_COMMAND" ERR
 
 R="\e[31m"
 G="\e[32m"
@@ -35,10 +35,22 @@ VALIDATE(){
 
 #rabbitmq install...
 cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOG_FILE
+VALIDATE $? "copy the systemctl service"
+
 dnf install rabbitmq-server -y &>>$LOG_FILE
+
 systemctl enable rabbitmq-server &>>$LOG_FILE
 systemctl start rabbitmq-server &>>$LOG_FILE
-rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+VALIDATE $? "install rabbitmq server"
+echo -e "install $G SUCCESS $N"
+
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    rabbitmqctl add_user roboshop roboshop123 &>>$LOG_FILE
+else
+    echo -e "user already exit $Y SKIPPING $N"
+fi 
+
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>>$LOG_FILE
 echo -e "rabbit mq $G success $N"
 
