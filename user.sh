@@ -49,7 +49,7 @@ else
     echo -e "User already exit $Y SKIPPING.. $N"
 fi
 
-mkdir /app 
+mkdir -p /app 
 VALIDATE $? "create directory"
 
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
