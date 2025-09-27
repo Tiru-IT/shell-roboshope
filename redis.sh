@@ -30,7 +30,7 @@ echo -e "redis install $G SUCCESS $N"
 
 sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf &>>$LOG_FILE
 #sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
-systemctl enable redis 
+systemctl enable redis &>>$LOG_FILE
 systemctl start redis 
 echo -e "redis start $G SUCCESS $N"
 

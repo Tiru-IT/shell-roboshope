@@ -11,6 +11,7 @@ SCRIPT_NAME=$( echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-roboshop/mongodb.log
 
 mkdir -p $LOGS_FOLDER
+SATRT_TIME=$(date +%s)
 echo -e "Script stated executed at: $(date)" | tee -a $LOG_FILE
 
 if [ $USER_ID -ne 0 ]; then
@@ -44,3 +45,7 @@ VALIDATE $? "Allowing remote connections to MongoDB"
 
 systemctl restart mongod
 VALIDATE $? "Restart MongoDB"
+
+END_TIME=$(date +%s)
+TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
+echo -e "Script exicuted in $TOTAL_TIME $Y seconds $N"
