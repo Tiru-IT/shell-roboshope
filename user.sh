@@ -1,65 +1,79 @@
 #!/bin/bash
 
-set -euo pipefail
-
-trap 'echo "there is error in lineno $LINENO, command is: $BASH_COMMAND "' ERR
-
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
 USER_ID=$(id -u)
-if [ $USER_ID -ne 0 ]; then 
-    echo -e "ERROR:: please run this command with  $R root user $N "
+
+if [ $USER_ID -ne 0 ]; then
+    echo "ERROR:: please run this command root user"
+    exit 1
 fi
 
-LOGS_FOLDER="/var/log/shell-roboshop"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.tirusatrapu.fun
+SATRT_TIME=$(date +%s)
+
+LOGS_FOLDER="/var/log/shell-roboshope"
+SCRIOT_NAME=$( echo $0 | cut -d "." -f1 )
+LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" #/var/log/shell-roboshop/catalogue.log
 
 mkdir -p $LOGS_FOLDER
-SATRT_TIME=$(date +%s)
-echo -e "Script started and exicuted is: $(date)" | tee -a $LOG_FILE
+echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
-#user 
+VALIDATE(){
+    if [ $1 -ne 0 ]; then
+        echo -e "$2 ...$R FAILER $N" | tee -a $LOG_FILE
+    else
+        echo -e "$2 ...$G SUCCESS $N" | tee -a $LOG_FILE 
+    fi
+}
+
+#user install....
 
 dnf module disable nodejs -y &>>$LOG_FILE
+VALIDATE $1 "disable nodejs"
+
 dnf module enable nodejs:20 -y &>>$LOG_FILE
+VALIDATE $1 "enable nodejs"
+
 dnf install nodejs -y &>>$LOG_FILE
-echo -e "user install $G SUCCESS $N" 
+VALIDATE $1 "install nodejs"
 
-#id roboshop &>>$LOG_FILE
-#id roboshop &>>$LOG_FILE
-#if [ $? -ne 0 ]; then
- #   useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-#else
- #   echo -e "user already exicuted $Y SKIPPING $N"
-#fi
-
-id roboshope &>>$LOG_FILE 
+id roboshope &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
 else
-    echo -e "User already exit $Y SKIPPING $N"
+    echo -e "User already exit $Y SKIPPING.. $N"
 fi
 
-mkdir -p /app 
+mkdir /app 
+VALIDATE $? "create directory"
 
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOG_FILE
+VALIDATE $? "download apilication code"
+
 cd /app 
+VALIDATE $? "change directary"
+
 rm -rf /app/*
+VALIDATE $? "remove the ecitued code"
+
 unzip /tmp/user.zip &>>$LOG_FILE
+VALIDATE $? "unzip the code"
+
 npm install &>>$LOG_FILE
+VALIDATE $? "npm install"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOG_FILE
-systemctl daemon-reload
+systemctl daemon-reload 
 systemctl enable user &>>$LOG_FILE
-systemctl start user
+VALIDATE $? "enable user"
 
+systemctl start user
+VALIDATE $? "start user"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
-#TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
-echo -e "Script exicuted in $TOTAL_TIME, $Y secoends $N"
+echo -e "Script exicuted in $TOTAL_TIME $Y seconds $N"
