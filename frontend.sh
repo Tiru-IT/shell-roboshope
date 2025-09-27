@@ -33,14 +33,21 @@ VALIDATE(){
 dnf module disable nginx -y
 dnf module enable nginx:1.24 -y
 dnf install nginx -y
+VALIDATE $? "install nginx"
 systemctl enable nginx 
 systemctl start nginx 
+VALIDATE $? "start nginx"
+
 rm -rf /usr/share/nginx/html/* 
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+VALIDATE $? "download frontend code"
 cd /usr/share/nginx/html 
 unzip /tmp/frontend.zip
-vim /etc/nginx/nginx.conf
+VALIDATE $? "unzip the code"
+
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
 systemctl restart nginx 
+VALIDATE $? "restart nginx"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $SATRT_TIME ))
