@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+trap "thre is an ERROR in $lINENO ,command is: $BASH_COMMAND" ERR
 
 R="\e[31m"
 G="\e[32m"
