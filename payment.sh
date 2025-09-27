@@ -34,6 +34,7 @@ VALIDATE(){
 
 dnf install python3 gcc python3-devel -y &>>$LOG_FILE
 VALIDATE $? "install pytho3"
+
 id roboshop $>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
@@ -41,7 +42,7 @@ else
     echo -e "user already exit $Y SKIPPING $N"
 fi
 
-mkdir /app 
+mkdir -p /app 
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOG_FILE
 VALIDATE $? "download code"
 cd /app 
