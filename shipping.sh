@@ -18,7 +18,7 @@ if [ $USER_ID -ne 0 ]; then
 fi
 
 SCRIPT_DIR=$PWD
-MONGODB_HOST="mongodb.tirusatrapu.fun"
+MONGODB_HOST="mysql.tirusatrapu.fun"
 SATRT_TIME=$(date +%s)
 
 LOGS_FOLDER="/var/log/shell-roboshope"
