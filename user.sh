@@ -34,13 +34,13 @@ VALIDATE(){
 #user install....
 
 dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $1 "disable nodejs"
+VALIDATE $? "disable nodejs"
 
 dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $1 "enable nodejs"
+VALIDATE $? "enable nodejs"
 
 dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $1 "install nodejs"
+VALIDATE $? "install nodejs"
 
 id roboshope &>>$LOG_FILE
 if [ $? -ne 0 ]; then
